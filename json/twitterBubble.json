@@ -1,0 +1,97 @@
+{
+    "type": "bubble",
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [{
+                "type": "image",
+                "url": "",
+                "position": "absolute",
+                "size": "xxs",
+                "offsetEnd": "xxl",
+                "offsetTop": "xxl"
+            }, {
+                "type": "text",
+                "text": "",
+                "weight": "bold",
+                "size": "xl",
+                "margin": "md",
+                "color": "#00acee"
+            },
+            {
+                "type": "text",
+                "text": "",
+                "weight": "bold",
+                "color": "#aaaaaa",
+                "size": "xs"
+            },
+            {
+                "type": "separator",
+                "margin": "xxl"
+            },
+            {
+                "type": "box",
+                "layout": "vertical",
+                "margin": "xxl",
+                "spacing": "sm",
+                "contents": [{
+                        "type": "text",
+                        "text": "",
+                        "size": "md",
+                        "wrap": true
+                    },
+                    {
+                        "type": "separator",
+                        "margin": "xxl"
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "margin": "xxl",
+                        "contents": [{
+                                "type": "text",
+                                "text": "RETWEETS:",
+                                "size": "xxs",
+                                "color": "#555555"
+                            },
+                            {
+                                "type": "text",
+                                "text": "",
+                                "size": "sm",
+                                "color": "#111111",
+                                "align": "end"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [{
+                                "type": "text",
+                                "text": "LIKES",
+                                "size": "xxs",
+                                "color": "#555555"
+                            },
+                            {
+                                "type": "text",
+                                "text": "",
+                                "size": "sm",
+                                "color": "#111111",
+                                "align": "end"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "separator",
+                "margin": "xxl"
+            }
+        ]
+    },
+    "styles": {
+        "footer": {
+            "separator": true
+        }
+    }
+}

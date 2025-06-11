@@ -1,0 +1,74 @@
+{
+    "echo_words": [
+        "你畫的",
+        "我一定到",
+        "可憐",
+        "幹你",
+        "你媽"
+    ],
+    "full_echo_words": [
+        "Hi",
+        "hi",
+        "嗨",
+        "又",
+        "又？",
+        "又?",
+        "做"
+    ],
+    "dai_voice": [
+        "https://cdn.discordapp.com/attachments/866565785982861322/866565816338481192/2w8wo-pkaa8.m4a",
+        "https://cdn.discordapp.com/attachments/866565785982861322/866565821723050034/272uo-yfs1z.m4a",
+        "https://cdn.discordapp.com/attachments/866565785982861322/866565827049160744/lxu5v-mrq9n.m4a"
+    ],
+    "abuse_words": [
+        "登能",
+        "廢",
+        "笨",
+        "障",
+        "癡",
+        "低",
+        "垃",
+        "爛",
+        "蠢",
+        "閉",
+        "去死",
+        "媽",
+        "雞",
+        "閉",
+        "賤",
+        "破"
+    ],
+    "praise_words": [
+        "屌",
+        "聰",
+        "帥",
+        "迷",
+        "趣",
+        "讚",
+        "棒",
+        "我好愛你",
+        "我好愛你"
+    ],
+    "YOUTUBE_API_KEY": "AIzaSyAukcqf-fhJNniLmP86fXENMeRNFSMDU2E",
+    "serpapi_key": [
+        "55056f57cf63eba5b31a925f0ddd18bc84db7bfcf50ebd5f98b39433de2eeb85",
+        "aefbc330bfc3f8d973a69bd9083e6c423fe9fa0c3c635c8be682bc90e8f5a05b",
+        "fda628c5565e275842dbc2c7d4a0bcc95387003af9f2501e29734ac14448c39a",
+        "1a69f7511bf935299e039718ca7e145e9794f93b3731971445c45e0e51126115",
+        "5a1336558cb9f175fd7ac26732da37bbf18306b46d9eff16484696626ceb0148",
+        "9e9864093bac08cc3e9ed739b8a67c5447d8b235792c199eea7112c786089449",
+        "b4eaff8ed7c5cc57c0addd831a5db30081ebe66bb87a37c1135c9d709fe8596d",
+        "df122f75c89e4865a6cd291ffe7d539ec3cf61c6dd537b171de68b8fb8efc768",
+        "a67a34e2af24722ca569b155d155fd7a482a3270488fb38e5cbb15df7e61b5ed",
+        "9b65e73a2285dc4a7a3ab8751108cbe8fb4d8ad2002dcc112d74104bf5c02d5c",
+        "314443d3e302d889c67b28f76879d70a988a6d27c13e5425de4bfb1f86c8f33a",
+        "e019a4e8732f3df9623a1c9836e20bbb34c0259414da1b5362bb033c1fc43019",
+        "d78f73b80db117e0bf4c9dd681f286ba72504b5a1f3c093342e444f82021e77c",
+        "6a460a09718393c62346e0f913c0160b5be64655d3a5c6ab2dbd028f8c8b1926",
+        "92cad4f90ecbc737e55f276d75539d6ebb6764ab38d3687d639b0a7ea32fba57",
+        "2d73758c844f78f8a6d8542bdaa15052bb5a57acd3901c7e37071c6b56dea732"
+    ],
+    "gemini_key": ["AIzaSyA_uzk-P_uWxOem7xqIeUCbETDUuHscjyk"],
+    "ig_id": "sKY_BOt_ig",
+    "ig_pw": "3X^v2S-j&uCXeS"
+}

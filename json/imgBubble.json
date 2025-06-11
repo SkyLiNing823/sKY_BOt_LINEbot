@@ -1,0 +1,12 @@
+{
+    "type": "bubble",
+    "hero": {
+        "type": "image",
+        "url": "",
+        "action": {
+            "type": "uri",
+            "uri": ""
+        },
+        "size": "full"
+    }
+}
