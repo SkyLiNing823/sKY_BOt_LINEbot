@@ -61,7 +61,6 @@ def handle_message(event):
         '!g': lambda: F_GoogleSearch(get_message, event),
         '!rand': lambda: F_randnum(get_message, event),
         '!rate': lambda: F_rate(get_message, send_headers, event),
-        '!face': lambda: F_faceDetect(event, user_id),
         '!img': lambda: text_reply(uploadIMG(f"{user_id}.png"), event),
         '@bot' : lambda: F_LLM(get_message, event, jdata['gemini_key']),
     }

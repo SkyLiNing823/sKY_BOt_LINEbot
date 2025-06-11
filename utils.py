@@ -20,10 +20,10 @@ import speech_recognition as sr
 import pyimgur
 import matplotlib.pyplot as plt
 from pydub import AudioSegment
-import cv2
 import pyscord_storage
 import audioread
-import numpy as np
+# import numpy as np
+# import cv2
 
 # https://github.com/line/line-bot-sdk-python
 from linebot import LineBotApi, WebhookHandler
@@ -182,9 +182,11 @@ def F_countMSG():
         n = int(times[dates.index(dt)])
         sheet.update_cell(dates.index(dt)+1, 2, str(n+1))
 
+
 async def F_async_countMSG():
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, F_countMSG)
+
 
 def resp_reload():
     sheet = sheet_reload("1GmO4ygrYvr2fv7z-PuFZZegQDt694PyMidHL3KWEHU4")
@@ -225,10 +227,13 @@ def F_respManager(splited_message, event):
             resp_p[resp_names.index(splited_message[1])] = splited_message[3]
             sheet.update_cell(resp_names.index(
                 splited_message[1])+1, 2, splited_message[3])
-            text_reply(f'{splited_message[1]}的回覆機率已調整為1/{splited_message[3]}', event)
+            text_reply(
+                f'{splited_message[1]}的回覆機率已調整為1/{splited_message[3]}', event)
         else:
-            sheet.append_row([splited_message[1], splited_message[3], f'{splited_message[1]}你好'])
-            text_reply(f'{splited_message[1]}未登錄回覆名單，現已登錄且將被回覆機率設為1/{splited_message[3]}', event)
+            sheet.append_row(
+                [splited_message[1], splited_message[3], f'{splited_message[1]}你好'])
+            text_reply(
+                f'{splited_message[1]}未登錄回覆名單，現已登錄且將被回覆機率設為1/{splited_message[3]}', event)
     elif splited_message[2] == '+':
         if splited_message[1] in resp_names:
             if splited_message[3] not in resp_words[resp_names.index(splited_message[1])]:
@@ -245,7 +250,8 @@ def F_respManager(splited_message, event):
                 text_reply('此句已存在', event)
         else:
             sheet.append_row([splited_message[1], '5', splited_message[3]])
-            text_reply(f'{splited_message[1]}未登錄回覆名單\n現已登錄且收錄:[\'{splited_message[3]}\']', event)
+            text_reply(
+                f'{splited_message[1]}未登錄回覆名單\n現已登錄且收錄:[\'{splited_message[3]}\']', event)
     elif splited_message[2] == '-':
         if splited_message[1] in resp_names:
             if splited_message[3] in resp_words[resp_names.index(splited_message[1])]:
@@ -324,7 +330,7 @@ def F_lottery(group_id, splited_message, event):
             text_reply(f'{name}', event)
         elif len(splited_message) == 2 and splited_message[1].isdigit():
             count = int(splited_message[1])
-            count = min(count, len(member_list)) 
+            count = min(count, len(member_list))
             selected_names = random.sample(member_list, count)
             content = '\n'.join(selected_names)
             text_reply(content, event)
@@ -762,7 +768,8 @@ def F_bahamuteHomePreview(get_message, event):
     html = html.replace('</div>', '\n</div>')
     bsObj = BeautifulSoup(html, 'html.parser')
     article = ''
-    ctitle = bsObj.findAll('h1', {'class': 'c-title'})[0].text.splited_message(' ')
+    ctitle = bsObj.findAll(
+        'h1', {'class': 'c-title'})[0].text.splited_message(' ')
     date = f'{ctitle[0][2:]} {ctitle[1][:5]}'
     title = ctitle[1][5:]
     t = 2
@@ -863,36 +870,36 @@ def F_rate(get_message, send_headers, event):
     text_reply(words, event)
 
 
-def F_faceDetect(event, id):
-    img = cv2.imread(f"{id}.png")
-    net = cv2.dnn.readNetFromCaffe(
-        "deploy.prototxt.txt", "res10_300x300_ssd_iter_140000.caffemodel")
-    h, w = img.shape[:2]
-    color = (0, 255, 0)
-    blob = cv2.dnn.blobFromImage(cv2.resize(
-        img, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
-    net.setInput(blob)
-    detections = net.forward()
-    for i in range(0, detections.shape[2]):
-        confidence = detections[0, 0, i, 2]
-        if confidence < 0.5:
-            continue
-        box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-        (startX, startY, endX, endY) = box.astype("int")
-        # text = "{:.2f}%".format(confidence * 100)
-        y = startY - 10 if startY - 10 > 10 else startY + 10
-        cv2.rectangle(img, (startX, startY), (endX, endY),
-                      color, 2)
-    grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    face_classifier = cv2.CascadeClassifier(
-        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    faceRects = face_classifier.detectMultiScale(grayImg, scaleFactor=1.3)
-    if len(faceRects):
-        for faceRect in faceRects:
-            x, y, w, h = faceRect
-            cv2.rectangle(img, (x, y), (x + h, y + w), color, 2)
-    cv2.imwrite("face.png", img)
-    img_reply(uploadIMG("face.png"), event)
+# def F_faceDetect(event, id):
+#     img = cv2.imread(f"{id}.png")
+#     net = cv2.dnn.readNetFromCaffe(
+#         "deploy.prototxt.txt", "res10_300x300_ssd_iter_140000.caffemodel")
+#     h, w = img.shape[:2]
+#     color = (0, 255, 0)
+#     blob = cv2.dnn.blobFromImage(cv2.resize(
+#         img, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
+#     net.setInput(blob)
+#     detections = net.forward()
+#     for i in range(0, detections.shape[2]):
+#         confidence = detections[0, 0, i, 2]
+#         if confidence < 0.5:
+#             continue
+#         box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+#         (startX, startY, endX, endY) = box.astype("int")
+#         # text = "{:.2f}%".format(confidence * 100)
+#         y = startY - 10 if startY - 10 > 10 else startY + 10
+#         cv2.rectangle(img, (startX, startY), (endX, endY),
+#                       color, 2)
+#     grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#     face_classifier = cv2.CascadeClassifier(
+#         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+#     faceRects = face_classifier.detectMultiScale(grayImg, scaleFactor=1.3)
+#     if len(faceRects):
+#         for faceRect in faceRects:
+#             x, y, w, h = faceRect
+#             cv2.rectangle(img, (x, y), (x + h, y + w), color, 2)
+#     cv2.imwrite("face.png", img)
+#     img_reply(uploadIMG("face.png"), event)
 
 
 def F_vote(event):
