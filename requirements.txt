@@ -94,3 +94,6 @@ wrapt==1.17.2
 yarl==1.20.1
 google-search-results==2.4.2
 langdetect==1.0.9
+apscheduler==3.11.0 
+tzlocal==5.3.1
+pytz==2025.2

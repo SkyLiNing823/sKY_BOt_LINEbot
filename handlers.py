@@ -54,8 +54,6 @@ def handle_message(event):
     if user_id == admin:
         if cmd == '!resp':
             F_respManager(splited_message, event)
-        if cmd == "atk":
-            testAttack()
 
     if cmd in command_handlers:
         command_handlers[cmd]()

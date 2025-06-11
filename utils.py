@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 import json
 import copy
 import os
@@ -12,7 +11,6 @@ from serpapi import GoogleSearch
 from google import genai
 from langdetect import detect
 import googletrans
-from gtts import gTTS
 from googlesearch import search
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -21,6 +19,8 @@ import speech_recognition as sr
 import pyimgur
 import matplotlib.pyplot as plt
 from pydub import AudioSegment
+import pytz
+# from gtts import gTTS
 # import pyscord_storage
 # import audioread
 # import numpy as np
@@ -125,8 +125,12 @@ def flex_reply(words, content, event):
         event.reply_token, reply)
 
 
-def sendTime():
-    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+def sendTime(yesterday=False):
+    TW_tz = pytz.timezone('Asia/Taipei')
+    if yesterday:
+        date = datetime.datetime.now(TW_tz) - datetime.timedelta(days=1)
+        return date.strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.datetime.now(TW_tz).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def imgSave(event):
@@ -937,12 +941,22 @@ def F_LLM(get_message, event):
     text_reply(response.text, event)
 
 
-def testAttack():
-    jh = 'U0b1cfa976cedd1f86f45dac94988fd73'
-    message = TextSendMessage(text='你是同性戀')
-    line_bot_api.push_message(jh, message)
+### push func ###
 
-    user_ids = ['U49562cad1b49d4894d1d91136960756f',
-                'U2290158f54f16aea8c2bdb597a54ff9e']
-    message = TextSendMessage(text='群發test')
-    line_bot_api.multicast(user_ids, message)
+
+def F_new_day_call():
+    leo = 'U0b1cfa976cedd1f86f45dac94988fd73'
+    main_group = 'C0862e003396d3da93b9016d848560f29'
+    message = TextSendMessage(text='李俊賢你是甲')
+    line_bot_api.push_message(leo, message)
+
+    now = sendTime()
+    yesterday = sendTime(yesterday=True)
+    sheet = sheet_reload("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
+    data = sheet.get_all_values()
+    times = 'N/A'
+    for d in data[-2:]:
+        if d[0] == yesterday:
+            times = d[1]
+    message = TextSendMessage(text=f'現在時間是{now}，昨天群組一共有{times}則訊息')
+    line_bot_api.push_message(main_group, message)
