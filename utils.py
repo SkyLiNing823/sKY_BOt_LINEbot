@@ -291,9 +291,9 @@ def F_translate(get_message, splited_message, event):
     text_reply(trans, event)
 
 
-async def F_TTS(get_message, event):
+def F_TTS(get_message, event):
     translator = googletrans.Translator()
-    detected = await translator.detect(get_message[5:])
+    detected = translator.detect(get_message[5:])
     tts = gTTS(text=get_message[5:], lang=detected.lang)
     tts.save("tmp.wav")
     with audioread.audio_open('tmp.wav') as f:
@@ -385,7 +385,6 @@ def F_imgSearch(splited_message, jdata, get_message, event):
     with open('json/imgBubble.json', 'r', encoding='utf8') as jfile:
         jdata = json.load(jfile)
     ctn = []
-    imgSave(URL_list[-1], event)
     for i in range(n):
         tmp = copy.deepcopy(jdata)
         tmp['hero']['url'] = tmp['hero']['action']['uri'] = URL_list[i]
@@ -634,7 +633,6 @@ def F_twitterPreview(get_message, event):
                         tmp['hero']['url'] = tmp['hero']['action']['uri'] = img_url
                         ctn.append(tmp)
                         url = img_url
-                imgSave(url, event)
                 if len(ctn) > 1:
                     with open('json/carousel.json', 'r', encoding='utf8') as jfile:
                         jdata = json.load(jfile)
