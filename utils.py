@@ -103,6 +103,9 @@ def flex_reply(words, content, event):
                ).reply_message(
         event.reply_token, reply)
 
+def sendTime():
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 
 def imgSave(event):
     PATH = f'{event.source.user_id}.png'

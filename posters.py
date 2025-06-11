@@ -2,7 +2,8 @@ from fastapi import FastAPI, Request, HTTPException
 
 @app.post("/callback")
 async def new_day_call():
-    pass
+    d
+    
 
 async def callback(request: Request):
     body = await request.json()

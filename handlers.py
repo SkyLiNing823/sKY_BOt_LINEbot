@@ -43,9 +43,7 @@ def get_info(event):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    dt = (datetime.datetime.today() +
-          datetime.timedelta(hours=8)).strftime("%Y/%m/%d")
-    print(dt)
+    print(sendTime())
 
     get_message = event.message.text.strip().rstrip().replace('！', '!')
     splited_message = get_message.split()
@@ -66,7 +64,7 @@ def handle_message(event):
         '!img': lambda: uploadIMG(f"{user_id}.png"),
         '!pic': lambda: text_reply(uploadIMG(f"{user_id}.png"), event),
         '!sta': lambda: F_statistic(event),
-        '!profile': lambda: text_reply(f'Name: {user_name}\nID: {user_id}\nPic URL: {user_pic_url}\nStatus: {user_status}', event),
+        '!profile': lambda: text_reply(f'Name:\n{user_name}\n\nID:\n{user_id}\n\nPic URL:\n{user_pic_url}\n\nStatus:\n{user_status}', event),
         '@bot': lambda: F_LLM(get_message, event),
     }
 
