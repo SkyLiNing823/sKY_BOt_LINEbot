@@ -65,7 +65,8 @@ def handle_message(event):
         '!rand': lambda: F_randnum(get_message, event),
         '!rate': lambda: F_rate(get_message, send_headers, event),
         '!img': lambda: uploadIMG(f"{user_id}.png"),
-        '!pic' : lambda: img_reply(uploadIMG(f"{user_id}.png"), event),
+        '!pic': lambda: img_reply(uploadIMG(f"{user_id}.png"), event),
+        '!sta': lambda: F_statistic(event),
         '@bot': lambda: F_LLM(get_message, event),
     }
 

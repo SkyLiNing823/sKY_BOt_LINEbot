@@ -21,8 +21,8 @@ import speech_recognition as sr
 import pyimgur
 import matplotlib.pyplot as plt
 from pydub import AudioSegment
-import pyscord_storage
-import audioread
+# import pyscord_storage
+# import audioread
 # import numpy as np
 # import cv2
 
@@ -292,17 +292,17 @@ def F_translate(get_message, splited_message, event):
     text_reply(trans, event)
 
 
-def F_TTS(get_message, event):
-    LANG = detect(get_message[5:])
-    tts = gTTS(text=get_message[5:], lang=LANG)
-    tts.save("tmp.wav")
-    with audioread.audio_open('tmp.wav') as f:
-        duration = int(f.duration) * 1000
-    print(pyscord_storage.upload('tmp.wav', 'tmp.wav'))
-    print(1)
-    data = pyscord_storage.upload('tmp.wav', 'tmp.wav')['data']
-    URL = data['url']
-    audio_reply(URL, duration, event)
+# def F_TTS(get_message, event):
+#     LANG = detect(get_message[5:])
+#     tts = gTTS(text=get_message[5:], lang=LANG)
+#     tts.save("tmp.wav")
+#     with audioread.audio_open('tmp.wav') as f:
+#         duration = int(f.duration) * 1000
+#     print(pyscord_storage.upload('tmp.wav', 'tmp.wav'))
+#     print(1)
+#     data = pyscord_storage.upload('tmp.wav', 'tmp.wav')['data']
+#     URL = data['url']
+#     audio_reply(URL, duration, event)
 
 
 def F_eval(get_message, event):
