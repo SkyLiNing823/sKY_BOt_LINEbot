@@ -1,8 +1,17 @@
 from fastapi import FastAPI, Request, HTTPException
+from main import app
+from linebot import LineBotApi
+from linebot.models import TextSendMessage
+from utils import *
+
 
 @app.post("/callback")
+async def test(request: Request):
+    jh = 'U0b1cfa976cedd1f86f45dac94988fd73'
+    line_bot_api
+
 async def new_day_call():
-    pass
+    time = sendTime()
     
 @app.post("/callback")
 async def callback(request: Request):

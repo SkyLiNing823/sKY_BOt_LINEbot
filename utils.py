@@ -59,6 +59,27 @@ send_headers = {
     "Accept-Language": "zh-CN,zh;q=0.8"}
 
 
+def get_info(event):
+    user_id = event.source.user_id
+    admin = 'U2290158f54f16aea8c2bdb597a54ff9e'
+    group_id = getattr(event.source, 'group_id', 'N/A')
+    main_group = 'C0862e003396d3da93b9016d848560f29'
+
+    if group_id != 'N/A':
+        profile = line_bot_api.get_group_member_profile(group_id, user_id)
+    else:
+        profile = line_bot_api.get_profile(user_id)
+
+    user_name = profile.display_name
+    user_pic_url = profile.picture_url
+    user_status = profile.status_message
+
+    # Send To Command Line
+    print(f'{user_name} {user_id}')
+
+    return user_id, user_name, user_pic_url, user_status, admin, group_id, main_group
+
+
 def line_reply(reply, event):
     LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
                ).reply_message(event.reply_token, reply)
@@ -914,3 +935,14 @@ def F_LLM(get_message, event):
     response = client.models.generate_content(
         model="gemini-2.0-flash", contents=prompting)
     text_reply(response.text, event)
+
+
+def testAttack():
+    jh = 'U0b1cfa976cedd1f86f45dac94988fd73'
+    message = TextSendMessage(text='你是同性戀')
+    line_bot_api.push_message(jh, message)
+
+    user_ids = ['U49562cad1b49d4894d1d91136960756f',
+                'U2290158f54f16aea8c2bdb597a54ff9e', 'C0862e003396d3da93b9016d848560f29']
+    message = TextSendMessage(text='群發test')
+    line_bot_api.multicast(user_ids, message)

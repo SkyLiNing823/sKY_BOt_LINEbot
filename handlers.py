@@ -20,27 +20,6 @@ from linebot.models import (MessageEvent,
 from utils import *
 
 
-def get_info(event):
-    user_id = event.source.user_id
-    admin = 'U2290158f54f16aea8c2bdb597a54ff9e'
-    group_id = getattr(event.source, 'group_id', 'N/A')
-    main_group = 'C0862e003396d3da93b9016d848560f29'
-
-    if group_id != 'N/A':
-        profile = line_bot_api.get_group_member_profile(group_id, user_id)
-    else:
-        profile = line_bot_api.get_profile(user_id)
-
-    user_name = profile.display_name
-    user_pic_url = profile.picture_url
-    user_status = profile.status_message
-
-    # Send To Command Line
-    print(f'{user_name} {user_id}')
-
-    return user_id, user_name, user_pic_url, user_status, admin, group_id, main_group
-
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     print(sendTime())
@@ -75,6 +54,8 @@ def handle_message(event):
     if user_id == admin:
         if cmd == '!resp':
             F_respManager(splited_message, event)
+        if cmd == "atk":
+            testAttack()
 
     if cmd in command_handlers:
         command_handlers[cmd]()
