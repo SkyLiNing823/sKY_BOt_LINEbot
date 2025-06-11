@@ -19,6 +19,7 @@ from linebot.models import (MessageEvent,
                             PostbackTemplateAction)
 from utils import *
 
+
 def get_info(event):
     user_id = event.source.user_id
     admin = 'U2290158f54f16aea8c2bdb597a54ff9e'
@@ -39,6 +40,7 @@ def get_info(event):
 
     return user_id, user_name, user_pic_url, user_status, admin, group_id, main_group
 
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     dt = (datetime.datetime.today() +
@@ -48,8 +50,9 @@ def handle_message(event):
     get_message = event.message.text.strip().rstrip().replace('！', '!')
     splited_message = get_message.split()
 
-    user_id, user_name, user_pic_url, user_status, admin, group_id, main_group = get_info(event)
-    
+    user_id, user_name, user_pic_url, user_status, admin, group_id, main_group = get_info(
+        event)
+
     with open('json/setting.json', 'r', encoding='utf8') as jfile:
         jdata = json.load(jfile)
 
@@ -62,11 +65,11 @@ def handle_message(event):
         '!rand': lambda: F_randnum(get_message, event),
         '!rate': lambda: F_rate(get_message, send_headers, event),
         '!img': lambda: text_reply(uploadIMG(f"{user_id}.png"), event),
-        '@bot' : lambda: F_LLM(get_message, event, jdata['gemini_key']),
+        '@bot': lambda: F_LLM(get_message, event),
     }
 
-    cmd = splited_message [0].lower() if splited_message else ''
-    
+    cmd = splited_message[0].lower() if splited_message else ''
+
     asyncio.create_task(F_async_countMSG())
 
     if user_id == admin:
@@ -157,7 +160,6 @@ def handle_message(event):
 
         if '一生' in get_message and '推' in get_message and '不' not in get_message:
             text_reply(user_name+'你真可憐', event)
-        
 
     # if Message_counter == 3:
     #     text_reply(Message_container, event)
@@ -183,6 +185,6 @@ def handle_message_Image(event):
     imgSave(event)
 
 
-@handler.add(PostbackEvent)  
+@handler.add(PostbackEvent)
 def handle_postback(event):
     data = event.postback.data

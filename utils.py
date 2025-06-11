@@ -58,11 +58,6 @@ send_headers = {
     "Accept-Language": "zh-CN,zh;q=0.8"}
 
 
-# Message_counter = 0
-# Message_container = ''
-# previous_user_name = ''
-
-
 def line_reply(reply, event):
     LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
                ).reply_message(event.reply_token, reply)
@@ -907,9 +902,9 @@ def F_vote(event):
     flex_reply('vote', reply, event)
 
 
-def F_LLM(get_message, event, key):
+def F_LLM(get_message, event):
     prompting = get_message[4:]
-    client = genai.Client(api_key=key)
+    client = genai.Client(api_key=os.getenv('gemini_key', None))
 
     response = client.models.generate_content(
         model="gemini-2.0-flash", contents=prompting)
