@@ -299,6 +299,7 @@ def F_TTS(get_message, event):
     with audioread.audio_open('tmp.wav') as f:
         duration = int(f.duration) * 1000
     print(pyscord_storage.upload('tmp.wav', 'tmp.wav'))
+    print(1)
     data = pyscord_storage.upload('tmp.wav', 'tmp.wav')['data']
     URL = data['url']
     audio_reply(URL, duration, event)
