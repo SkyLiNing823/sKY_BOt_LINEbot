@@ -943,6 +943,6 @@ def testAttack():
     line_bot_api.push_message(jh, message)
 
     user_ids = ['U49562cad1b49d4894d1d91136960756f',
-                'U2290158f54f16aea8c2bdb597a54ff9e', 'C0862e003396d3da93b9016d848560f29']
+                'U2290158f54f16aea8c2bdb597a54ff9e']
     message = TextSendMessage(text='群發test')
     line_bot_api.multicast(user_ids, message)
