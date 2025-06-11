@@ -293,8 +293,8 @@ def F_translate(get_message, splited_message, event):
 
 def F_TTS(get_message, event):
     translator = googletrans.Translator()
-    detected = translator.detect(get_message[5:])
-    tts = gTTS(text=get_message[5:], lang=detected.lang)
+    detected = translator.translate(get_message[5:])
+    tts = gTTS(text=get_message[5:], lang=detected.src)
     tts.save("tmp.wav")
     with audioread.audio_open('tmp.wav') as f:
         duration = int(f.duration) * 1000
