@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Header, HTTPException
 from fastapi.responses import PlainTextResponse
 from linebot.exceptions import InvalidSignatureError
 from utils import handler
+from handlers import *
 
 
 app = FastAPI()
