@@ -192,7 +192,7 @@ def resp_reload():
     for row in respData:
         resp_names.append(row[0])
         resp_p.append(row[1])
-        resp_words.append(row[2].splited_message(','))
+        resp_words.append(row[2].split(','))
     return sheet, resp_names, resp_p, resp_words
 
 
@@ -545,15 +545,15 @@ def F_pttPreview(get_message, event):
     main_container = bsObj.find(id='main-container')
     all_text = main_container.text
     if '留言' in get_message:
-        pre_comment = all_text.splited_message('批踢踢實業坊(ptt.cc)')[1]
-        pre_comment_list = pre_comment.splited_message('html')[1:]
+        pre_comment = all_text.split('批踢踢實業坊(ptt.cc)')[1]
+        pre_comment_list = pre_comment.split('html')[1:]
         pre_comment = ''.join(pre_comment_list)
-        pre_comment_list = pre_comment.splited_message('\n')
+        pre_comment_list = pre_comment.split('\n')
         text = '\n\n'.join(pre_comment_list)
     else:
-        pre_text = all_text.splited_message('批踢踢實業坊(ptt.cc)')[0]
-        pre_text = pre_text.splited_message('\n--\n')[0]
-        texts = pre_text.splited_message('\n')
+        pre_text = all_text.split('批踢踢實業坊(ptt.cc)')[0]
+        pre_text = pre_text.split('\n--\n')[0]
+        texts = pre_text.split('\n')
         contents = texts[2:]
         content = '\n'.join(contents)
         text = title + '\n' + '作者: '+author + '\n' + '-'+'\n' + content
@@ -615,7 +615,7 @@ def F_twitterPreview(get_message, event):
             jdata1['body']['contents'][4]['contents'][2]['contents'][1]['text'] = retweet_count
             jdata1['body']['contents'][4]['contents'][3]['contents'][1]['text'] = favorite_count
             photos_urls = contents[contents.find(
-                '"photos":[')+len('"photos":['):contents.find('],"videos"')].splited_message(',')
+                '"photos":[')+len('"photos":['):contents.find('],"videos"')].split(',')
             msg.append(FlexSendMessage('tweet', jdata1))
             if photos_urls[0] != '':
                 with open('json/imgBubble.json', 'r', encoding='utf8') as jfile:
@@ -655,7 +655,7 @@ def F_twitterPreview(get_message, event):
                     max_resolution = 0
                     for video in videos:
                         if 'mp4' in video['href']:
-                            resolution = eval(video['href'].splited_message(
+                            resolution = eval(video['href'].split(
                                 '/')[-2].replace('x', '*'))
                             if resolution > max_resolution:
                                 video_url = video['href']
@@ -695,7 +695,7 @@ def F_twitterPreview(get_message, event):
                     img_url = img['src']
                 jdata1['body']['contents'][0]['url'] = 'https://cdn.discordapp.com/attachments/856516846144192543/1102493248120963153/R-18_icon.svg.png'
                 jdata1['body']['contents'][1]['text'] = '@' + \
-                    get_message.splited_message('/')[-3]
+                    get_message.split('/')[-3]
                 jdata1['body']['contents'][2][
                     'text'] = '(Only the first image will be showed)'
                 jdata1['body']['contents'][4]['contents'][0]['text'] = content
@@ -764,7 +764,7 @@ def F_bahamuteHomePreview(get_message, event):
     bsObj = BeautifulSoup(html, 'html.parser')
     article = ''
     ctitle = bsObj.findAll(
-        'h1', {'class': 'c-title'})[0].text.splited_message(' ')
+        'h1', {'class': 'c-title'})[0].text.split(' ')
     date = f'{ctitle[0][2:]} {ctitle[1][:5]}'
     title = ctitle[1][5:]
     t = 2
@@ -775,7 +775,7 @@ def F_bahamuteHomePreview(get_message, event):
     rawCtn = bsObj.findAll('div', {'class': 'home_box'}
                            )[0]
     ctn = rawCtn.findAll('div')
-    info = ctn[-1].text.splited_message('\n')
+    info = ctn[-1].text.split('\n')
     gp = info[1]
     collect = info[2]
     article += '\n'+f'{title}\n\n'+'------\n\n' + \
