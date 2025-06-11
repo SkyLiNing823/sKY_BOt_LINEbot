@@ -36,7 +36,7 @@ def get_info(event):
     user_status = profile.status_message
 
     # Send To Command Line
-    print(f'{user_name}')
+    print(f'{user_name} {user_id}')
 
     return user_id, user_name, user_pic_url, user_status, admin, group_id, main_group
 
@@ -64,8 +64,9 @@ def handle_message(event):
         '!rand': lambda: F_randnum(get_message, event),
         '!rate': lambda: F_rate(get_message, send_headers, event),
         '!img': lambda: uploadIMG(f"{user_id}.png"),
-        '!pic': lambda: img_reply(uploadIMG(f"{user_id}.png"), event),
+        '!pic': lambda: text_reply(uploadIMG(f"{user_id}.png"), event),
         '!sta': lambda: F_statistic(event),
+        '!profile': lambda: text_reply(f'Name: {user_name}\nID: {user_id}\nPic URL: {user_pic_url}\nStatus: {user_status}', event),
         '@bot': lambda: F_LLM(get_message, event),
     }
 
