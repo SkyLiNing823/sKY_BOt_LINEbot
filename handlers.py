@@ -58,7 +58,6 @@ def handle_message(event):
 
     command_handlers = {
         '!t': lambda: F_translate(get_message, splited_message, event),
-        '!tts': lambda: F_TTS(get_message, event),
         '!抽': lambda: F_lottery(group_id, splited_message, event),
         '!yt': lambda: F_ytPreview(get_message, jdata, event),
         '!g': lambda: F_GoogleSearch(get_message, event),
