@@ -948,7 +948,7 @@ def F_vote(event):
 
 
 def F_LLM(get_message, user_name, memorization,  event):
-    prompting = f'發言人: {user_name}\n內容:\n'+get_message[4:]
+    prompting = f'speaker: {user_name} (DO NOT REPEAT THIS)\n-----\n'+get_message[4:]
     photo = 1 if '圖片' in get_message[4:] or 'image' in get_message[4:] else 0
     contents = prompting
     if photo:
