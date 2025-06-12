@@ -64,11 +64,11 @@ TW_tz = pytz.timezone('Asia/Taipei')
 client = genai.Client(api_key=os.getenv('gemini_key', None))
 chat = client.chats.create(model="gemini-2.0-flash")
 
+
 def initialization():
     scheduler = BackgroundScheduler(timezone=TW_tz)
     scheduler.add_job(F_new_day_call, 'cron', hour=0, minute=0)
     scheduler.start()
-    
 
 
 def get_info(event):
@@ -206,17 +206,20 @@ def F_statistic(event):
 
 
 def F_countMSG():
-    sheet = sheet_reload("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
-    data = sheet.get_all_values()
-    dates = [data[i][0]for i in range(len(data))]
-    times = [data[i][1]for i in range(len(data))]
-    dt = (datetime.datetime.today() +
-          datetime.timedelta(hours=8)).strftime("%Y/%m/%d")
-    if len(dates) == 0 or dt != dates[-1]:
-        sheet.append_row([dt, '1'])
-    else:
-        n = int(times[dates.index(dt)])
-        sheet.update_cell(dates.index(dt)+1, 2, str(n+1))
+    try:
+        sheet = sheet_reload("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
+        data = sheet.get_all_values()
+        dates = [data[i][0]for i in range(len(data))]
+        times = [data[i][1]for i in range(len(data))]
+        dt = (datetime.datetime.today() +
+              datetime.timedelta(hours=8)).strftime("%Y/%m/%d")
+        if len(dates) == 0 or dt != dates[-1]:
+            sheet.append_row([dt, '1'])
+        else:
+            n = int(times[dates.index(dt)])
+            sheet.update_cell(dates.index(dt)+1, 2, str(n+1))
+    except:
+        pass
 
 
 async def F_async_countMSG():
@@ -949,7 +952,7 @@ def F_LLM(get_message, memorization,  event):
         response = chat.send_message(prompting)
     else:
         response = client.models.generate_content(
-        model="gemini-2.0-flash", contents=prompting)
+            model="gemini-2.0-flash", contents=prompting)
     text_reply(response.text, event)
 
 
