@@ -44,8 +44,8 @@ def handle_message(event):
         '!pic': lambda: text_reply(uploadIMG(f"{user_id}.png"), event),
         '!sta': lambda: F_statistic(event),
         '!profile': lambda: text_reply(f'Name:\n{user_name}\n\nID:\n{user_id}\n\nPic URL:\n{user_pic_url}\n\nStatus:\n{user_status}', event),
-        '@bot': lambda: F_LLM(get_message, True, event),
-        '!bot': lambda: F_LLM(get_message, False, event),
+        '@bot': lambda: F_LLM(get_message, user_name, True, event),
+        '!bot': lambda: F_LLM(get_message, user_name, False, event),
     }
 
     cmd = splited_message[0].lower() if splited_message else ''
@@ -162,7 +162,7 @@ def handle_message_Audio(event):
 
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_message_Image(event):
-    imgSave(event)
+    saveIMG(event)
 
 
 @handler.add(PostbackEvent)

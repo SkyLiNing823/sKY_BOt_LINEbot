@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 from pydub import AudioSegment
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
+from PIL import Image
 # from gtts import gTTS
 # import pyscord_storage
 # import audioread
@@ -144,7 +145,7 @@ def sendTime(yesterday=False):
     return datetime.datetime.now(TW_tz).strftime('%Y-%m-%d %H:%M:%S')
 
 
-def imgSave(event):
+def saveIMG(event):
     PATH = f'{event.source.user_id}.png'
     image_content = line_bot_api.get_message_content(event.message.id)
     with open(PATH, 'wb') as fd:
@@ -946,14 +947,25 @@ def F_vote(event):
     flex_reply('vote', reply, event)
 
 
-def F_LLM(get_message, memorization,  event):
-    prompting = get_message[4:]
+def F_LLM(get_message, user_name, memorization,  event):
+    prompting = f'發言人: {user_name}\n內容:\n'+get_message[4:]
+    photo = 1 if '圖片' in get_message[4:] or 'image' in get_message[4:] else 0
+    contents = prompting
+    if photo:
+        try:
+            img = Image.open(f'{event.source.user_id}.png')
+            contents = [img, prompting]
+        except:
+            photo = 0
     if memorization:
-        response = chat.send_message(prompting)
+        response = chat.send_message(contents)
     else:
         response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=prompting)
-    text_reply(response.text, event)
+            model="gemini-2.0-flash", contents=contents)
+    reply = response.text
+    if len(reply) > 5000:
+        reply = reply[:4970] + '\n---因內容超過5000字下略---'
+    text_reply(reply, event)
 
 
 ### push func ###
