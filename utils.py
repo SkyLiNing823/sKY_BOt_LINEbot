@@ -19,6 +19,7 @@ import speech_recognition as sr
 import pyimgur
 import matplotlib.pyplot as plt
 from pydub import AudioSegment
+from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 # from gtts import gTTS
 # import pyscord_storage
@@ -57,6 +58,17 @@ send_headers = {
     "Connection": "keep-alive",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     "Accept-Language": "zh-CN,zh;q=0.8"}
+
+TW_tz = pytz.timezone('Asia/Taipei')
+
+client = genai.Client(api_key=os.getenv('gemini_key', None))
+chat = client.chats.create(model="gemini-2.0-flash")
+
+def initialization():
+    scheduler = BackgroundScheduler(timezone=TW_tz)
+    scheduler.add_job(F_new_day_call, 'cron', hour=0, minute=0)
+    scheduler.start()
+    
 
 
 def get_info(event):
@@ -126,7 +138,6 @@ def flex_reply(words, content, event):
 
 
 def sendTime(yesterday=False):
-    TW_tz = pytz.timezone('Asia/Taipei')
     if yesterday:
         date = datetime.datetime.now(TW_tz) - datetime.timedelta(days=1)
         return date.strftime('%Y-%m-%d %H:%M:%S')
@@ -932,11 +943,12 @@ def F_vote(event):
     flex_reply('vote', reply, event)
 
 
-def F_LLM(get_message, event):
+def F_LLM(get_message, memorization,  event):
     prompting = get_message[4:]
-    client = genai.Client(api_key=os.getenv('gemini_key', None))
-
-    response = client.models.generate_content(
+    if memorization:
+        response = chat.send_message(prompting)
+    else:
+        response = client.models.generate_content(
         model="gemini-2.0-flash", contents=prompting)
     text_reply(response.text, event)
 

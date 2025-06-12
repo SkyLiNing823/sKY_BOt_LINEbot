@@ -3,7 +3,7 @@ from fastapi.responses import PlainTextResponse
 from linebot.exceptions import InvalidSignatureError
 from utils import handler
 from handlers import *
-from apscheduler.schedulers.background import BackgroundScheduler
+
 
 
 app = FastAPI()
@@ -22,7 +22,5 @@ async def callback(request: Request, x_line_signature:str = Header(None)):
         raise HTTPException(status_code=400, detail='Invalid signature')
     return PlainTextResponse('OK')
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(F_new_day_call, 'cron', hour=0, minute=0)
-scheduler.start()
+initialization()
 
