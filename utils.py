@@ -948,7 +948,7 @@ def F_vote(event):
 
 
 def F_LLM(get_message, user_name, memorization,  event):
-    if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[4:].lower() == 'reset':
+    if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
         global chat
         chat = client.chats.create(model="gemini-2.0-flash")
         text_reply('已順利移除所有記憶。', event)
