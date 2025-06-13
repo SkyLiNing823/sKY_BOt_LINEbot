@@ -948,6 +948,7 @@ def F_vote(event):
 
 
 def F_LLM(get_message, user_name, memorization,  event):
+    global client
     try:
         if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
             global chat
@@ -977,7 +978,6 @@ def F_LLM(get_message, user_name, memorization,  event):
     except:
         global gemini_idx
         gemini_idx += 1
-        global client
         client = genai.Client(api_key=os.getenv(
             f'gemini_key_{gemini_idx}', None))
         F_LLM(get_message, user_name, memorization,  event)
