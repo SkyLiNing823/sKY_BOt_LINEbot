@@ -28,7 +28,6 @@ from PIL import Image
 # import numpy as np
 # import cv2
 
-# https://github.com/line/line-bot-sdk-python
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (MessageEvent,
@@ -62,7 +61,8 @@ send_headers = {
 
 TW_tz = pytz.timezone('Asia/Taipei')
 
-client = genai.Client(api_key=os.getenv('gemini_key', None))
+gemini_idx = 0
+client = genai.Client(api_key=os.getenv(f'gemini_key_{gemini_idx}', None))
 chat = client.chats.create(model="gemini-2.0-flash")
 
 
@@ -948,31 +948,39 @@ def F_vote(event):
 
 
 def F_LLM(get_message, user_name, memorization,  event):
-    if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
-        global chat
-        chat = client.chats.create(model="gemini-2.0-flash")
-        text_reply('已順利移除所有記憶。', event)
-        return
-    prompting = f'speaker: {user_name} (DO NOT REPEAT THIS)\n-----\n' + \
-        get_message[4:]
-    photo = 1 if '圖片' in get_message[4:] or '照片' in get_message[4:
-                                                                ] or 'image' in get_message[4:] else 0
-    contents = prompting
-    if photo:
-        try:
-            img = Image.open(f'{event.source.user_id}.png')
-            contents = [img, prompting]
-        except:
-            photo = 0
-    if memorization:
-        response = chat.send_message(contents)
-    else:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=contents)
-    reply = response.text
-    if len(reply) > 5000:
-        reply = reply[:4970] + '\n---因內容超過5000字下略---'
-    text_reply(reply, event)
+    try:
+        if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
+            global chat
+            chat = client.chats.create(model="gemini-2.0-flash")
+            text_reply('已順利移除所有記憶。', event)
+            return
+        prompting = f'speaker: {user_name} (DO NOT REPEAT THIS)\n-----\n' + \
+            get_message[4:]
+        photo = 1 if '圖片' in get_message[4:] or '照片' in get_message[4:
+                                                                    ] or 'image' in get_message[4:] else 0
+        contents = prompting
+        if photo:
+            try:
+                img = Image.open(f'{event.source.user_id}.png')
+                contents = [img, prompting]
+            except:
+                photo = 0
+        if memorization:
+            response = chat.send_message(contents)
+        else:
+            response = client.models.generate_content(
+                model="gemini-2.0-flash", contents=contents)
+        reply = response.text
+        if len(reply) > 5000:
+            reply = reply[:4970] + '\n---因內容超過5000字下略---'
+        text_reply(reply, event)
+    except:
+        global gemini_idx
+        gemini_idx += 1
+        global client
+        client = genai.Client(api_key=os.getenv(
+            f'gemini_key_{gemini_idx}', None))
+        F_LLM(get_message, user_name, memorization,  event)
 
 
 ### push func ###
