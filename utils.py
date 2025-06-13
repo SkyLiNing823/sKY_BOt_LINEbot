@@ -62,7 +62,7 @@ send_headers = {
 TW_tz = pytz.timezone('Asia/Taipei')
 
 gemini_idx = 0
-client = genai.Client(api_key=os.getenv(f'gemini_key_{gemini_idx}', None))
+client = genai.Client(api_key=os.getenv(f'gemini_key_{gemini_idx}'))
 chat = client.chats.create(model="gemini-2.0-flash")
 
 
@@ -981,7 +981,7 @@ def F_LLM(get_message, user_name, memorization,  event):
             global gemini_idx
             gemini_idx += 1
             client = genai.Client(api_key=os.getenv(
-                f'gemini_key_{gemini_idx}', None))
+                f'gemini_key_{gemini_idx}'))
 
 
 ### push func ###
