@@ -10,3 +10,5 @@ import pytz
 TW_tz = pytz.timezone('Asia/Taipei')
 time = datetime.datetime.now(TW_tz).strftime('%Y-%m-%d %H:%M:%S')
 print(datetime.datetime.now(TW_tz).strftime('%Y-%m-%d %H:%M:%S'))
+time = datetime.datetime.now(TW_tz) - datetime.timedelta(days=1)
+print(time.strftime('%Y/%m/%d'))

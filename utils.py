@@ -67,12 +67,17 @@ chat = client.chats.create(model="gemini-2.0-flash")
 
 
 def initialization():
+    message = TextSendMessage(text='Bot restarted!')
+    line_bot_api.push_message('U2290158f54f16aea8c2bdb597a54ff9e', message)
+    line_bot_api.push_message('C0862e003396d3da93b9016d848560f29', message)
     scheduler = BackgroundScheduler(timezone=TW_tz)
     scheduler.add_job(F_new_day_call, 'cron', hour=0, minute=0)
     scheduler.start()
+    message = TextSendMessage(text='Initialization successed.')
+    line_bot_api.push_message('U2290158f54f16aea8c2bdb597a54ff9e', message)
 
 
-def get_info(event):
+def getInfo(event):
     user_id = event.source.user_id
     admin = 'U2290158f54f16aea8c2bdb597a54ff9e'
     group_id = getattr(event.source, 'group_id', 'N/A')
@@ -138,11 +143,11 @@ def flex_reply(words, content, event):
         event.reply_token, reply)
 
 
-def sendTime(yesterday=False):
+def sendTime(yesterday=False, format='%Y/%m/%d'):
     if yesterday:
         date = datetime.datetime.now(TW_tz) - datetime.timedelta(days=1)
-        return date.strftime('%Y-%m-%d %H:%M:%S')
-    return datetime.datetime.now(TW_tz).strftime('%Y-%m-%d %H:%M:%S')
+        return date.strftime(format)
+    return datetime.datetime.now(TW_tz).strftime(format)
 
 
 def saveIMG(event):
@@ -174,7 +179,7 @@ def sound2text(event):
     text_reply(text, event)
 
 
-def sheet_reload(key):
+def reloadSheet(key):
     scopes = ["https://spreadsheets.google.com/feeds"]
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
         "json/credentials.json", scopes)
@@ -192,7 +197,7 @@ def uploadIMG(PATH):
 
 
 def F_statistic(event):
-    sheet = sheet_reload("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
+    sheet = reloadSheet("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
     data = sheet.get_all_values()
     X = [d[0][5:] for d in data[-7:]]
     Y = [int(d[1]) for d in data[-7:]]
@@ -208,12 +213,11 @@ def F_statistic(event):
 
 def F_countMSG():
     try:
-        sheet = sheet_reload("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
+        sheet = reloadSheet("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
         data = sheet.get_all_values()
         dates = [data[i][0]for i in range(len(data))]
         times = [data[i][1]for i in range(len(data))]
-        dt = (datetime.datetime.today() +
-              datetime.timedelta(hours=8)).strftime("%Y/%m/%d")
+        dt = sendTime()
         if len(dates) == 0 or dt != dates[-1]:
             sheet.append_row([dt, '1'])
         else:
@@ -228,8 +232,8 @@ async def F_async_countMSG():
     await loop.run_in_executor(None, F_countMSG)
 
 
-def resp_reload():
-    sheet = sheet_reload("1GmO4ygrYvr2fv7z-PuFZZegQDt694PyMidHL3KWEHU4")
+def reloadResp():
+    sheet = reloadSheet("1GmO4ygrYvr2fv7z-PuFZZegQDt694PyMidHL3KWEHU4")
     respData = sheet.get_all_values()
     resp_names = []
     resp_p = []
@@ -248,7 +252,7 @@ def resp(n, arr, event):
 
 
 def F_respManager(splited_message, event):
-    sheet, resp_names, resp_p, resp_words = resp_reload()
+    sheet, resp_names, resp_p, resp_words = reloadResp()
     if len(splited_message) == 2:
         if splited_message[1] == 'list':
             keys = ""
@@ -363,7 +367,7 @@ def F_eval(get_message, event):
 
 def F_lottery(group_id, splited_message, event):
     if group_id == "C0862e003396d3da93b9016d848560f29":
-        sheet = sheet_reload("1EfgW0_aNkc_r790Htp3NTmhSRfHuriil1u0YZhPYrAo")
+        sheet = reloadSheet("1EfgW0_aNkc_r790Htp3NTmhSRfHuriil1u0YZhPYrAo")
         memberData = sheet.get_all_values()
         member_list = [memberData[i][0]
                        for i in range(len(memberData))]
@@ -995,7 +999,7 @@ def F_new_day_call():
 
     now = sendTime()
     yesterday = sendTime(yesterday=True)
-    sheet = sheet_reload("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
+    sheet = reloadSheet("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
     data = sheet.get_all_values()
     times = 'N/A'
     for d in data[-2:]:
@@ -1003,3 +1007,16 @@ def F_new_day_call():
             times = d[1]
     message = TextSendMessage(text=f'現在時間是{now}，昨天群組一共有{times}則訊息')
     line_bot_api.push_message(main_group, message)
+
+
+def test_new_day_call(admin):
+    now = sendTime()
+    yesterday = sendTime(yesterday=True)
+    sheet = reloadSheet("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
+    data = sheet.get_all_values()
+    times = 'N/A'
+    for d in data[-2:]:
+        if d[0] == yesterday:
+            times = d[1]
+    message = TextSendMessage(text=f'現在時間是{now}，昨天群組一共有{times}則訊息')
+    line_bot_api.push_message(admin, message)

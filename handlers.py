@@ -27,7 +27,7 @@ def handle_message(event):
     get_message = event.message.text.strip().rstrip().replace('！', '!')
     splited_message = get_message.split()
 
-    user_id, user_name, user_pic_url, user_status, admin, group_id, main_group = get_info(
+    user_id, user_name, user_pic_url, user_status, admin, group_id, main_group = getInfo(
         event)
 
     with open('json/setting.json', 'r', encoding='utf8') as jfile:
@@ -46,6 +46,7 @@ def handle_message(event):
         '!profile': lambda: text_reply(f'Name:\n{user_name}\n\nID:\n{user_id}\n\nPic URL:\n{user_pic_url}\n\nStatus:\n{user_status}', event),
         '@bot': lambda: F_LLM(get_message, user_name, True, event),
         '!bot': lambda: F_LLM(get_message, user_name, False, event),
+        '!test' : lambda: test_new_day_call(admin),
     }
 
     cmd = splited_message[0].lower() if splited_message else ''
@@ -144,7 +145,7 @@ def handle_message(event):
     # if Message_counter == 3:
     #     text_reply(Message_container, event)
 
-    sheet, resp_names, resp_p, resp_words = resp_reload()
+    sheet, resp_names, resp_p, resp_words = reloadResp()
 
     if user_name in resp_names:
         p = resp_p[resp_names.index(user_name)]
