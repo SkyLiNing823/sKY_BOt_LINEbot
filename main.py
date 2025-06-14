@@ -5,15 +5,16 @@ from utils import handler
 from handlers import *
 
 
-
 app = FastAPI()
+
 
 @app.get('/')
 async def health_check():
     return {'status': 'Healthy'}
 
+
 @app.post('/')
-async def callback(request: Request, x_line_signature:str = Header(None)):
+async def callback(request: Request, x_line_signature: str = Header(None)):
     body = await request.body()
     body_text = body.decode("utf-8")
     try:
@@ -23,4 +24,3 @@ async def callback(request: Request, x_line_signature:str = Header(None)):
     return PlainTextResponse('OK')
 
 initialization()
-

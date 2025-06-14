@@ -16,15 +16,13 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import asyncio
 import speech_recognition as sr
-import pyimgur
 import matplotlib.pyplot as plt
 from pydub import AudioSegment
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 from PIL import Image
-# from gtts import gTTS
-# import pyscord_storage
-# import audioread
+from gtts import gTTS
+import audioread
 # import numpy as np
 # import cv2
 
@@ -66,15 +64,14 @@ client = genai.Client(api_key=os.getenv(f'gemini_key_{gemini_idx}'))
 chat = client.chats.create(model="gemini-2.0-flash")
 
 
+### general funcs ###
+
 def initialization():
-    message = TextSendMessage(text='Bot restarted!')
-    line_bot_api.push_message('U2290158f54f16aea8c2bdb597a54ff9e', message)
-    line_bot_api.push_message('C0862e003396d3da93b9016d848560f29', message)
+    # message = TextSendMessage(text='Bot restarted!')
+    # line_bot_api.push_message('U2290158f54f16aea8c2bdb597a54ff9e', message)
     scheduler = BackgroundScheduler(timezone=TW_tz)
     scheduler.add_job(F_new_day_call, 'cron', hour=0, minute=0)
     scheduler.start()
-    message = TextSendMessage(text='Initialization successed.')
-    line_bot_api.push_message('U2290158f54f16aea8c2bdb597a54ff9e', message)
 
 
 def getInfo(event):
@@ -158,6 +155,20 @@ def saveIMG(event):
             fd.write(chunk)
 
 
+def upload2discord(PATH):
+    url = f"https://discord.com/api/v10/channels/{os.getenv('DISCORD_CHANNEL_ID')}/messages"
+    headers = {
+        "Authorization": f"Bot {os.getenv('DISCORD_BOT_TOKEN')}"
+    }
+    with open(PATH, 'rb') as f:
+        files = {
+            "file": (PATH, f)
+        }
+        response = requests.post(url, headers=headers, files=files)
+    json_resp = response.json()
+    return json_resp['attachments'][0]['url']
+
+
 def sound2text(event):
     PATH = 'tmp.mp3'
     DST = 'tmp.wav'
@@ -188,14 +199,6 @@ def reloadSheet(key):
     return sheet
 
 
-def uploadIMG(PATH):
-    CLIENT_ID = "14dcbae49ad6b84"
-    title = "Uploaded with PyImgur"
-    im = pyimgur.Imgur(CLIENT_ID)
-    uploaded_image = im.upload_image(PATH, title=title)
-    return uploaded_image.link
-
-
 def F_statistic(event):
     sheet = reloadSheet("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
     data = sheet.get_all_values()
@@ -207,7 +210,7 @@ def F_statistic(event):
         plt.text(a, b, b, ha='center', va='bottom', fontsize=12)
     plt.savefig("tmp.jpg")
     PATH = "tmp.jpg"
-    link = uploadIMG(PATH)
+    link = upload2discord(PATH)
     img_reply(link, event)
 
 
@@ -340,17 +343,14 @@ def F_translate(get_message, splited_message, event):
     text_reply(trans, event)
 
 
-# def F_TTS(get_message, event):
-#     LANG = detect(get_message[5:])
-#     tts = gTTS(text=get_message[5:], lang=LANG)
-#     tts.save("tmp.wav")
-#     with audioread.audio_open('tmp.wav') as f:
-#         duration = int(f.duration) * 1000
-#     print(pyscord_storage.upload('tmp.wav', 'tmp.wav'))
-#     print(1)
-#     data = pyscord_storage.upload('tmp.wav', 'tmp.wav')['data']
-#     URL = data['url']
-#     audio_reply(URL, duration, event)
+def F_TTS(get_message, event):
+    LANG = detect(get_message[5:])
+    tts = gTTS(text=get_message[5:], lang=LANG)
+    tts.save("tmp.wav")
+    with audioread.audio_open('tmp.wav') as f:
+        duration = int(f.duration) * 1000
+    URL = upload2discord('tmp.wav')
+    audio_reply(URL, duration, event)
 
 
 def F_eval(get_message, event):
@@ -987,7 +987,6 @@ def F_LLM(get_message, user_name, memorization,  event):
             client = genai.Client(api_key=os.getenv(
                 f'gemini_key_{gemini_idx}'))
 
-
 ### push func ###
 
 
@@ -1007,16 +1006,3 @@ def F_new_day_call():
             times = d[1]
     message = TextSendMessage(text=f'現在時間是{now}，昨天群組一共有{times}則訊息')
     line_bot_api.push_message(main_group, message)
-
-
-def test_new_day_call(admin):
-    now = sendTime()
-    yesterday = sendTime(yesterday=True)
-    sheet = reloadSheet("1ti_4scE5PyIzcH4s6mzaWaGqiIQfK9X_R--oDXqyJsA")
-    data = sheet.get_all_values()
-    times = 'N/A'
-    for d in data[-2:]:
-        if d[0] == yesterday:
-            times = d[1]
-    message = TextSendMessage(text=f'現在時間是{now}，昨天群組一共有{times}則訊息')
-    line_bot_api.push_message(admin, message)

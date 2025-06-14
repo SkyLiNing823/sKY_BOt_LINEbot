@@ -40,13 +40,11 @@ def handle_message(event):
         '!g': lambda: F_GoogleSearch(get_message, event),
         '!rand': lambda: F_randnum(get_message, event),
         '!rate': lambda: F_rate(get_message, send_headers, event),
-        '!img': lambda: uploadIMG(f"{user_id}.png"),
-        '!pic': lambda: text_reply(uploadIMG(f"{user_id}.png"), event),
+        '!img': lambda: img_reply(upload2discord(f"{user_id}.png"), event),
         '!sta': lambda: F_statistic(event),
         '!profile': lambda: text_reply(f'Name:\n{user_name}\n\nID:\n{user_id}\n\nPic URL:\n{user_pic_url}\n\nStatus:\n{user_status}', event),
         '@bot': lambda: F_LLM(get_message, user_name, True, event),
         '!bot': lambda: F_LLM(get_message, user_name, False, event),
-        '!test' : lambda: test_new_day_call(admin),
     }
 
     cmd = splited_message[0].lower() if splited_message else ''
