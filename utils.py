@@ -9,7 +9,8 @@ from math import *
 from bs4 import BeautifulSoup
 from serpapi import GoogleSearch
 from google import genai
-from langdetect import detect
+from gtts import gTTS
+import langid
 import googletrans
 from googlesearch import search
 import gspread
@@ -21,7 +22,6 @@ from pydub import AudioSegment
 from apscheduler.schedulers.background import BackgroundScheduler
 import pytz
 from PIL import Image
-from gtts import gTTS
 import audioread
 # import numpy as np
 # import cv2
@@ -344,7 +344,7 @@ def F_translate(get_message, splited_message, event):
 
 
 def F_TTS(get_message, event):
-    LANG = detect(get_message[5:])
+    LANG, _ = langid.classify(get_message[5:])
     tts = gTTS(text=get_message[5:], lang=LANG)
     tts.save("tmp.wav")
     with audioread.audio_open('tmp.wav') as f:

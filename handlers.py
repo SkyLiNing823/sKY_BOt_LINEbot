@@ -41,6 +41,7 @@ def handle_message(event):
         '!rand': lambda: F_randnum(get_message, event),
         '!rate': lambda: F_rate(get_message, send_headers, event),
         '!img': lambda: img_reply(upload2discord(f"{user_id}.png"), event),
+        '!url': lambda: text_reply(upload2discord(f"{user_id}.png"), event),
         '!tts': lambda: F_TTS(get_message, event),
         '!sta': lambda: F_statistic(event),
         '!profile': lambda: text_reply(f'Name:\n{user_name}\n\nID:\n{user_id}\n\nPic URL:\n{user_pic_url}\n\nStatus:\n{user_status}', event),
