@@ -984,6 +984,7 @@ def F_LLM(get_message, user_name, memorization,  event):
         except:
             global gemini_idx
             gemini_idx += 1
+            print(gemini_idx)
             client = genai.Client(api_key=os.getenv(
                 f'gemini_key_{gemini_idx}'))
 
