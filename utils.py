@@ -59,8 +59,12 @@ send_headers = {
 
 TW_tz = pytz.timezone('Asia/Taipei')
 
-client = genai.Client(api_key=os.getenv('gemini_key_DEFAULT'))
-chat = client.chats.create(model="gemini-2.0-flash")
+client_default = genai.Client(api_key=os.getenv('gemini_key_DEFAULT'))
+chat_default = client_default.chats.create(model="gemini-2.0-flash")
+client_playground = genai.Client(api_key=os.getenv('gemini_key_FOR_PLAYGROUD'))
+chat_playground = client_playground.chats.create(model="gemini-2.0-flash")
+client_lab = genai.Client(api_key=os.getenv('gemini_key_FOR_LAB'))
+chat_lab = client_lab.chats.create(model="gemini-2.0-flash")
 
 
 ### general funcs ###
@@ -951,14 +955,20 @@ def F_vote(event):
 
 
 def F_LLM(get_message, user_name, group_id, memorization,  event):
-    global client
-    global chat
-    key_table = {'Ce36c2b35e5459d427c3507ed40dc2112': 'gemini_key_FOR_LAB',
-    'C50ac0633ba25dc04ed18c9c0e46bdeab': 'gemini_key_FOR_PLAY_GROUD',
-    'C0862e003396d3da93b9016d848560f29' : 'gemini_key_DEFAULT'
-    }
-    client = genai.Client(api_key=os.getenv(key_table[group_id]))
-    chat = client.chats.create(model="gemini-2.0-flash")
+    global client_default
+    global client_playground
+    global client_lab
+    global chat_default
+    global chat_playground
+    global chat_lab
+    key_table = {'Ce36c2b35e5459d427c3507ed40dc2112': (client_lab, chat_lab),
+                 'C50ac0633ba25dc04ed18c9c0e46bdeab': (client_playground, chat_playground),
+                 }
+    if group_id in key_table:
+        client, chat = key_table[group_id]
+    else:
+        client, chat = client_default, chat_default
+
     if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
         chat = client.chats.create(model="gemini-2.0-flash")
         text_reply('已順利移除所有記憶。', event)
