@@ -45,6 +45,7 @@ def handle_message(event):
         '!tts': lambda: F_TTS(get_message, event),
         '!sta': lambda: F_statistic(event),
         '!profile': lambda: text_reply(f'Name:\n{user_name}\n\nID:\n{user_id}\n\nPic URL:\n{user_pic_url}\n\nStatus:\n{user_status}', event),
+        '!group': lambda: text_reply(f'Group ID:\n{group_id}\n\n', event),
         '@bot': lambda: F_LLM(get_message, user_name, True, event),
         '!bot': lambda: F_LLM(get_message, user_name, False, event),
     }
