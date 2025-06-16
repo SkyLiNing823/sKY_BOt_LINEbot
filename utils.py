@@ -961,8 +961,8 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
     global chat_default
     global chat_playground
     global chat_lab
-    key_table = {'Ce36c2b35e5459d427c3507ed40dc2112': (client_lab, chat_lab),
-                 'C50ac0633ba25dc04ed18c9c0e46bdeab': (client_playground, chat_playground),
+    key_table = {'Ce36c2b35e5459d427c3507ed40dc2112': [client_lab, chat_lab],
+                 'C50ac0633ba25dc04ed18c9c0e46bdeab': [client_playground, chat_playground],
                  }
     if group_id in key_table:
         client, chat = key_table[group_id]
@@ -970,7 +970,14 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
         client, chat = client_default, chat_default
 
     if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
-        chat = client.chats.create(model="gemini-2.0-flash")
+        if group_id in key_table:
+            key_table[group_id][1] = key_table[group_id][0].chats.create(
+                model="gemini-2.0-flash")
+            chat = key_table[group_id][1]
+        else:
+            chat_default = client_default.chats.create(
+                model="gemini-2.0-flash")
+            chat = chat_default
         text_reply('已順利移除所有記憶。', event)
         return
     prompting = f'speaker: {user_name} (DO NOT REPEAT THIS)\n-----\n' + \
