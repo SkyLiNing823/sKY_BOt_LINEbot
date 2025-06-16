@@ -982,9 +982,10 @@ def F_LLM(get_message, user_name, memorization,  event):
                 reply = reply[:4970] + '\n---因內容超過5000字下略---'
             print(gemini_idx)
             text_reply(reply, event)
+            break
         except:
             if gemini_idx == 3:
-                text_reply('API keys used up.')
+                text_reply('API keys used up.', event)
                 return
             gemini_idx += 1
             print(gemini_idx)
