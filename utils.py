@@ -953,6 +953,7 @@ def F_vote(event):
 
 def F_LLM(get_message, user_name, memorization,  event):
     global client
+    global gemini_idx
     while True:
         try:
             if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
@@ -979,10 +980,12 @@ def F_LLM(get_message, user_name, memorization,  event):
             reply = response.text
             if len(reply) > 5000:
                 reply = reply[:4970] + '\n---因內容超過5000字下略---'
+            print(gemini_idx)
             text_reply(reply, event)
-            break
         except:
-            global gemini_idx
+            if gemini_idx == 3:
+                text_reply('API keys used up.')
+                return
             gemini_idx += 1
             print(gemini_idx)
             client = genai.Client(api_key=os.getenv(
