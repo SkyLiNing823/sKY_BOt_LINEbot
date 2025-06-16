@@ -969,7 +969,7 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
         if group_id == 'Ce36c2b35e5459d427c3507ed40dc2112':
             chat_lab = client_lab.chats.create(model="gemini-2.0-flash")
         elif group_id == 'C50ac0633ba25dc04ed18c9c0e46bdeab':
-            chat_playground = chat_playground.chats.create(
+            chat_playground = client_playground.chats.create(
                 model="gemini-2.0-flash")
         else:
             chat_default = client_default.chats.create(
