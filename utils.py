@@ -965,7 +965,7 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
                  'C50ac0633ba25dc04ed18c9c0e46bdeab': [client_playground, chat_playground],
                  }
 
-    if event.source.user_id == 'U2290158f54f16aea8c2bdb597a54ff9e' and get_message[5:].lower() == 'reset':
+    if get_message[5:].lower() == 'reset':
         if group_id == 'Ce36c2b35e5459d427c3507ed40dc2112':
             chat_lab = client_lab.chats.create(model="gemini-2.0-flash")
         elif group_id == 'C50ac0633ba25dc04ed18c9c0e46bdeab':
