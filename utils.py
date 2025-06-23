@@ -238,101 +238,6 @@ async def F_async_countMSG():
     await loop.run_in_executor(None, F_countMSG)
 
 
-def reloadResp():
-    sheet = reloadSheet("1GmO4ygrYvr2fv7z-PuFZZegQDt694PyMidHL3KWEHU4")
-    respData = sheet.get_all_values()
-    resp_names = []
-    resp_p = []
-    resp_words = []
-    for row in respData:
-        resp_names.append(row[0])
-        resp_p.append(row[1])
-        resp_words.append(row[2].split(','))
-    return sheet, resp_names, resp_p, resp_words
-
-
-def resp(n, arr, event):
-    if n > 0 and random.random() < 1 / n:
-        text = random.choice(arr)
-        text_reply(text, event)
-
-
-def F_respManager(splited_message, event):
-    sheet, resp_names, resp_p, resp_words = reloadResp()
-    if len(splited_message) == 2:
-        if splited_message[1] == 'list':
-            keys = ""
-            for i in range(len(resp_names)):
-                if int(resp_p[i]) != 0:
-                    keys += resp_names[i]+'\n'
-            text_reply(f'名單:\n{keys}', event)
-        elif splited_message[1] in resp_names:
-            p = resp_p[resp_names.index(splited_message[1])]
-            words = resp_words[resp_names.index(splited_message[1])]
-            text_reply(f'p:{p}\nwords:\n{words}', event)
-        else:
-            text_reply(f'名單無此人', event)
-    elif splited_message[2] == 'p':
-        if splited_message[1] in resp_names:
-            resp_p[resp_names.index(splited_message[1])] = splited_message[3]
-            sheet.update_cell(resp_names.index(
-                splited_message[1])+1, 2, splited_message[3])
-            text_reply(
-                f'{splited_message[1]}的回覆機率已調整為1/{splited_message[3]}', event)
-        else:
-            sheet.append_row(
-                [splited_message[1], splited_message[3], f'{splited_message[1]}你好'])
-            text_reply(
-                f'{splited_message[1]}未登錄回覆名單，現已登錄且將被回覆機率設為1/{splited_message[3]}', event)
-    elif splited_message[2] == '+':
-        if splited_message[1] in resp_names:
-            if splited_message[3] not in resp_words[resp_names.index(splited_message[1])]:
-                resp_words[resp_names.index(
-                    splited_message[1])].append(splited_message[3])
-                words = ''
-                for i in resp_words[resp_names.index(splited_message[1])]:
-                    words += ','+str(i)
-                sheet.update_cell(
-                    resp_names.index(splited_message[1])+1, 3, words[1:])
-                text_reply(
-                    f'資料庫已加入「{splited_message[3]}」\n現已收錄:{resp_words[resp_names.index(splited_message[1])]}', event)
-            else:
-                text_reply('此句已存在', event)
-        else:
-            sheet.append_row([splited_message[1], '5', splited_message[3]])
-            text_reply(
-                f'{splited_message[1]}未登錄回覆名單\n現已登錄且收錄:[\'{splited_message[3]}\']', event)
-    elif splited_message[2] == '-':
-        if splited_message[1] in resp_names:
-            if splited_message[3] in resp_words[resp_names.index(splited_message[1])]:
-                resp_words[resp_names.index(
-                    splited_message[1])].remove(splited_message[3])
-                words = ''
-                for i in resp_words[resp_names.index(splited_message[1])]:
-                    words += ','+str(i)
-                sheet.update_cell(
-                    resp_names.index(splited_message[1])+1, 3, words[1:])
-
-                text_reply(
-                    f'資料庫已刪除「{splited_message[3]}」\n現已收錄:{resp_words[resp_names.index(splited_message[1])]}', event)
-            else:
-                text_reply('此句不存在', event)
-        else:
-            text_reply(f'{splited_message[1]}未登錄回覆名單', event)
-    elif splited_message[2] == 'del':
-        if splited_message[1] in resp_names:
-            resp_p[resp_names.index(splited_message[1])] = '0'
-            sheet.update_cell(resp_names.index(
-                splited_message[1])+1, 2, '0')
-            keys = ""
-            for i in range(len(resp_names)):
-                if int(resp_p[i]) != 0:
-                    keys += resp_names[i]+'\n'
-            text_reply(f'成員已移除{splited_message[1]}\n目前名單:\n{keys}', event)
-        else:
-            text_reply(f'成員名單不存在{splited_message[1]}', event)
-
-
 def F_translate(get_message, splited_message, event):
     translator = googletrans.Translator()
     text = get_message[3:]
@@ -408,10 +313,8 @@ def F_lottery(group_id, splited_message, event):
 
 def F_imgSearch(splited_message, jdata, get_message, event):
     if splited_message[-1].isdigit():
-        n = int(splited_message[-1])
+        n = min(int(splited_message[-1]), 10)
         get_message = get_message[:-len(splited_message[-1])]
-        if (n > 10):
-            n = 10
     else:
         n = 1
     URL_list = []
@@ -420,21 +323,20 @@ def F_imgSearch(splited_message, jdata, get_message, event):
         "tbm": "isch"
     }
     params['q'] = get_message[:-4]
-    params['api_key'] = random.choice(jdata['serpapi_key'])
-    client = GoogleSearch(params)
-    data = client.get_dict()
-    while ('error' in data.keys()):
+    while True:
         params['api_key'] = random.choice(jdata['serpapi_key'])
         client = GoogleSearch(params)
         data = client.get_dict()
+        if 'error' not in data.keys():
+            break
     imgs = data['images_results']
-    x = 0
-    if (n > len(imgs)):
-        n = len(imgs)
+    n = min(n, len(imgs))
     for img in imgs:
-        if x < n and img['original'][-4:].lower() in ['.jpg', '.png', 'jpeg'] and img['original'][:5] == 'https':
+        if len(URL_list) == n:
+            break
+        if img['original'][:5] == 'https' and ['original'][-4:] in ['.jpg', '.png', 'jpeg']:
             URL_list.append(img['original'])
-            x += 1
+
     with open('json/imgBubble.json', 'r', encoding='utf8') as jfile:
         jdata = json.load(jfile)
     ctn = []
@@ -455,16 +357,12 @@ def F_imgSearch(splited_message, jdata, get_message, event):
 def F_ytSearch(splited_message, get_message, jdata, event):
     if splited_message[-1].isdigit():
         x = int(splited_message[-1])
-        s = 1
-    else:
-        x = 3
-        s = 0
-    URL = ''
-    YOUTUBE_API_KEY = jdata['YOUTUBE_API_KEY']
-    if s == 1:
         q = get_message[4:-2]
     else:
+        x = 3
         q = get_message[4:]
+    URL = ''
+    YOUTUBE_API_KEY = jdata['YOUTUBE_API_KEY']
     url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + \
         q+'&key='+YOUTUBE_API_KEY+'&type=video&maxResults='+str(x)
     request = requests.get(url)
@@ -478,7 +376,7 @@ def F_ytSearch(splited_message, get_message, jdata, event):
 def F_GoogleSearch(get_message, event):
     text = ''
     query = get_message[2:]
-    for url in search(query, stop=3):
+    for url in search(query, num_results=3):
         if url not in text:
             text += url+'\n\n'
     text_reply(text, event)
@@ -994,15 +892,21 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
             contents = [img, prompting]
         except:
             photo = 0
-    if memorization:
-        response = chat.send_message(contents)
-    else:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=contents)
+    try:
+        if memorization:
+            response = chat.send_message(contents)
+        else:
+            response = client.models.generate_content(
+                model="gemini-2.0-flash", contents=contents)
+    except Exception as e:
+        text_reply(f'[Error] : {str(e)}', event)
     reply = response.text
+    if not reply:
+        text_reply('[Error] :  Empty Content', event)
     if len(reply) > 5000:
         reply = reply[:4970] + '\n---因內容超過5000字下略---'
     text_reply(reply, event)
+
 
 ### push func ###
 
