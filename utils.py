@@ -334,7 +334,7 @@ def F_imgSearch(splited_message, jdata, get_message, event):
     for img in imgs:
         if len(URL_list) == n:
             break
-        if img['original'][:5] == 'https' and ['original'][-4:] in ['.jpg', '.png', 'jpeg']:
+        if img['original'][:5] == 'https' and img['original'][-4:] in ['.jpg', '.png', 'jpeg']:
             URL_list.append(img['original'])
 
     with open('json/imgBubble.json', 'r', encoding='utf8') as jfile:
