@@ -60,7 +60,7 @@ def handle_message(event):
     elif get_message[:2] == '!抽':
         F_lottery(group_id, splited_message, event)
 
-    elif splited_message[-2][-4:].lower() in ['.jpg', '.png']:
+    elif len(splited_message) >= 2 and splited_message[-2][-4:].lower() in ['.jpg', '.png']:
         F_imgSearch(splited_message, jdata, get_message, event)
 
     elif 'https://' in get_message:
