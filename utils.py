@@ -897,7 +897,8 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
             contents = [img, prompt]
         except:
             text_reply('[Error] :  Cannot upload the image.', event)
-    contents = prompt
+    else:
+        contents = prompt
     try:
         if memorization:
             response = chat.send_message(contents)
