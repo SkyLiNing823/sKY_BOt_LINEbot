@@ -197,7 +197,7 @@ def sound2text(event):
         with sr.AudioFile(DST) as source:
             audio = r.record(source)
         text = r.recognize_google(audio, language='zh-Hant')
-    os.remove("tmp.wav")
+        os.remove("tmp.wav")
     text_reply(text, event)
 
 
@@ -896,8 +896,8 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
             img = client.files.upload(file=f'{event.source.user_id}.png')
             contents = [img, prompt]
         except:
-            contents = prompt
-        contents = prompt
+            text_reply('[Error] :  Cannot upload the image.', event)
+    contents = prompt
     try:
         if memorization:
             response = chat.send_message(contents)
@@ -908,7 +908,7 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
         text_reply(f'[Error] : {str(e)}', event)
     reply = response.text
     if not reply:
-        text_reply('[Error] :  Empty Content', event)
+        text_reply('[Error] :  The content is empty.', event)
     if len(reply) > 5000:
         reply = reply[:4970] + '\n---因內容超過5000字下略---'
     text_reply(reply, event)
