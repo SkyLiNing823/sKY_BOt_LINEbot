@@ -175,20 +175,28 @@ def upload2discord(PATH):
 def sound2text(event):
     PATH = 'tmp.mp3'
     DST = 'tmp.wav'
-    audio_content = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
-                               ).get_message_content(event.message.id)
+    audio = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+                       ).get_message_content(event.message.id)
     with open(PATH, 'wb') as fd:
-        for chunk in audio_content.iter_content():
+        for chunk in audio.iter_content():
             fd.write(chunk)
-    fd.close()
-    # converting
-    sound = AudioSegment.from_file(PATH)
-    sound.export(DST, format="wav")
-    # recgonizing
-    r = sr.Recognizer()
-    with sr.AudioFile(DST) as source:
-        audio = r.record(source)
-    text = r.recognize_google(audio, language='zh-Hant')
+        fd.close()
+    try:
+        prompt = f'"Please transcribe the attached audio into a verbatim script. Only include the content of the audio—no additional text.'
+        audio = client_default.files.upload(file=PATH)
+        contents = [audio, prompt]
+        response = client_default.models.generate_content(
+            model="gemini-2.0-flash", contents=contents)
+        text = response.text
+    except:
+        # converting
+        sound = AudioSegment.from_file(PATH)
+        sound.export(DST, format="wav")
+        # recgonizing
+        r = sr.Recognizer()
+        with sr.AudioFile(DST) as source:
+            audio = r.record(source)
+        text = r.recognize_google(audio, language='zh-Hant')
     os.remove("tmp.wav")
     text_reply(text, event)
 
@@ -880,18 +888,16 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
     else:
         client, chat = client_default, chat_default
 
-    prompting = f'speaker: {user_name} (DO NOT REPEAT THIS)\n-----\n' + \
+    prompt = f'speaker: {user_name} (DO NOT REPEAT THIS)\n-----\n' + \
         get_message[4:]
-    photo = 1 if '圖片' in get_message[4:] or '照片' in get_message[4:
-                                                                ] or 'image' in get_message[4:] else 0
-    contents = prompting
 
-    if photo:
+    if '圖片' in get_message[4:] or '照片' in get_message[4:] or 'image' in get_message[4:]:
         try:
-            img = Image.open(f'{event.source.user_id}.png')
-            contents = [img, prompting]
+            img = client.files.upload(file=f'{event.source.user_id}.png')
+            contents = [img, prompt]
         except:
-            photo = 0
+            contents = prompt
+        contents = prompt
     try:
         if memorization:
             response = chat.send_message(contents)
@@ -912,10 +918,10 @@ def F_LLM(get_message, user_name, group_id, memorization,  event):
 
 
 def F_new_day_call():
-    leo = 'U0b1cfa976cedd1f86f45dac94988fd73'
+    # leo = 'U0b1cfa976cedd1f86f45dac94988fd73'
     main_group = 'C0862e003396d3da93b9016d848560f29'
-    message = TextSendMessage(text='李俊賢你是甲')
-    line_bot_api.push_message(leo, message)
+    # message = TextSendMessage(text='李俊賢你是甲')
+    # line_bot_api.push_message(leo, message)
 
     now = sendTime()
     yesterday = sendTime(yesterday=True)
