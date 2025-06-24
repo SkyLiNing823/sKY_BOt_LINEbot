@@ -57,10 +57,13 @@ def handle_message(event):
     if cmd in command_handlers:
         command_handlers[cmd]()
 
+    elif get_message.lower() == 'hi':
+        text_reply(get_message, event)
+
     elif get_message[:2] == '!抽':
         F_lottery(group_id, splited_message, event)
 
-    elif len(splited_message) >= 2 and splited_message[-2][-4:].lower() in ['.jpg', '.png']:
+    elif len(splited_message) >= 2 and (splited_message[-2][-4:].lower() in ['.jpg', '.png'] or splited_message[-1][-4:].lower() in ['.jpg', '.png']):
         F_imgSearch(splited_message, jdata, get_message, event)
 
     elif 'https://' in get_message:
@@ -81,9 +84,6 @@ def handle_message(event):
 
     elif get_message[0].isdigit() and get_message[-1].isdigit():
         F_eval(get_message, event)
-
-    with open('previous_user_name.txt', 'w') as f:
-        f.write(user_name)
 
 
 @handler.add(MessageEvent, message=AudioMessage)
