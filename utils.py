@@ -535,8 +535,8 @@ def F_twitterPreview(get_message, event):
         request = requests.get(url)
         contents = request.text
         if "avatarUrl" in contents:
-            username = contents[contents.find(
-                '<span class=\\"css-901oao css-16my406 css-1hf3ou5 r-poiln3 r-bcqeeo r-qvutc0\\"><span class=\\"css-901oao css-16my406 r-poiln3 r-bcqeeo r-qvutc0\\">')+len('<span class=\\"css-901oao css-16my406 css-1hf3ou5 r-poiln3 r-bcqeeo r-qvutc0\\"><span class=\\"css-901oao css-16my406 r-poiln3 r-bcqeeo r-qvutc0\\">'):contents.find('</span>')]
+            username = contents[contents.find('<span class=\\"css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3\\">') + 65: contents.find(
+                '</span></span></div><div dir=\\"ltr\\" class=\\"css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr')]
             screen_name = contents[contents.find(
                 '"handler":"')+len('"handler":"'):contents.find('","avatarUrl":"')]
             if '.jpg' in contents:
