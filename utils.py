@@ -186,7 +186,7 @@ def sound2text(event):
         audio = client_default.files.upload(file=PATH)
         contents = [audio, prompt]
         response = client_default.models.generate_content(
-            model="gemini-2.0-flash", contents=contents)
+            model="gemini-3-flash-preview", contents=contents)
         text = response.text
     except:
         # converting
@@ -531,7 +531,7 @@ def F_twitterPreview(get_message, event):
         for line in f.readlines():
             stack.append(line)
     for link in stack:
-        url = 'https://tweetpik.com/api/v2/tweets?url='+link
+        url = 'https://t.com/api/v2/tweets?url='+link
         request = requests.get(url)
         contents = request.text
         if "avatarUrl" in contents:
